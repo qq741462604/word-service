@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: local
+
+  jackson:
+    time-zone: GMT+8
+
+llm:
+  api:
+    url: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+    key: ${LLM_API_KEY}
+  model: qwen-plus
+  top_n: 5
+
+okhttp:
+  connect-timeout: 10000
+  read-timeout: 60000
+  write-timeout: 60000
+  retry-on-connection-failure: true
+  max-idle-connections: 5
+  keep-alive-duration: 300000
+
+
+
+
