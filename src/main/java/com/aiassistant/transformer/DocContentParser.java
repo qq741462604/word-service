@@ -1,8 +1,12 @@
 package com.aiassistant.transformer;
 
+import com.aiassistant.model.LlmCleanResult;
+import com.aiassistant.util.LlmOutputCleaner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DocContentParser {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -12,11 +16,18 @@ public class DocContentParser {
      */
     public String extractContent(String llmResponse) throws Exception {
         JsonNode root = mapper.readTree(llmResponse);
-        return root
+        String rawContent = root
                 .path("choices")
                 .get(0)
                 .path("message")
                 .path("content")
                 .asText();
+        LlmCleanResult cleanResult = LlmOutputCleaner.clean(rawContent);
+
+// ✅ 1. 打印 think（仅日志，不入业务）
+        if (cleanResult.getThink() != null) {
+            log.info("LLM THINK:\n{}", cleanResult.getThink());
+        }
+        return cleanResult.getJson();
     }
 }
